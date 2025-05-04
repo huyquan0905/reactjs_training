@@ -1,11 +1,12 @@
 import React, { Component } from "react";
 import "./input.css";
+import { STATUS_TASK } from "../../constants/const";
 
 class InputList extends Component {
   state = {
     tasks: [],
     inputValue: "",
-    filter: "All", 
+    filter: STATUS_TASK.ALL,
   };
 
   handleChange = (e) => {
@@ -86,10 +87,10 @@ class InputList extends Component {
           <span>{itemsLeft} items left!</span>
           <div className="filters">
             <button
-              className={filter === "All" ? "active" : ""}
-              onClick={() => this.setFilter("All")}
+              className={filter === STATUS_TASK.ALL ? "active" : ""}
+              onClick={() => this.setFilter(STATUS_TASK.ALL)}
             >
-              All
+              {STATUS_TASK.ALL}
             </button>
             <button
               className={filter === "Active" ? "active" : ""}
