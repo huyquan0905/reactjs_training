@@ -68,4 +68,33 @@
     border-radius: 4px;
     color: #d66;
   }
+
+  .todo-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding-right: 30px;
+  }
+  
+  .delete-btn {
+    position: absolute;
+    right: 5px;
+    background: transparent;
+    border: none;
+    color: red;
+    font-size: 16px;
+    cursor: pointer;
+    display: none;
+  }
+  
+  .todo-item:hover .delete-btn {
+    display: block;
+  }
+  
+  .edit-input {
+    padding: 4px;
+    font-size: 1rem;
+    width: 90%;
+  }
+  
   

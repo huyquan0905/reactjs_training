@@ -1,0 +1,7 @@
+* Đọc về phần Life Cycle
+* Chia component
+* Xóa sửa task trong list
+
+* Xử lý thêm chức năng: 
+- Phân trang theo page (max = 5 page)
+- Click double vào task trong list => Focus lên ô input và edit task
