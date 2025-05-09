@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import "./input.css";
-import { STATUS_TASK } from "../../constants/const";
+import { STATUS_TASK, TASKS_PER_PAGE } from "../../constants/const";
 import FilterList from "./FilterList";
+import PagingTask from "../PagingTask/PagingTask";
 
 class InputList extends Component {
   state = {
@@ -10,7 +11,10 @@ class InputList extends Component {
     filter: STATUS_TASK.ALL,
     editingTaskId: null,
     // editInputValue: "",
+    currentPage: 1,
   };
+
+  TASKS_PER_PAGE = TASKS_PER_PAGE;
 
   handleChange = (e) => {
     this.setState({ inputValue: e.target.value });
@@ -131,14 +135,24 @@ class InputList extends Component {
   //   });
   // };
 
+  changePage = (page) => {
+    this.setState({ currentPage: page });
+  };
+
   render() {
-    const { tasks, inputValue, filter, editingTaskId } = this.state;
+    const { tasks, inputValue, filter } = this.state;
 
     const filteredTasks = tasks.filter((task) => {
       if (filter === STATUS_TASK.ACTIVE) return !task.completed;
       if (filter === STATUS_TASK.COMPLETED) return task.completed;
       return true;
     });
+
+    const totalPages = Math.ceil(filteredTasks.length / this.TASKS_PER_PAGE);
+    const currentPageTasks = filteredTasks.slice(
+      (this.state.currentPage - 1) * this.TASKS_PER_PAGE,
+      this.state.currentPage * this.TASKS_PER_PAGE
+    );
 
     const itemsLeft = tasks.filter((t) => !t.completed).length;
 
@@ -155,7 +169,7 @@ class InputList extends Component {
         />
 
         <ul className="todo-list">
-          {filteredTasks.map((task) => (
+          {currentPageTasks.map((task) => (
             <li key={task.id} className="todo-item">
               <label>
                 <input
@@ -171,7 +185,7 @@ class InputList extends Component {
                   {task.text}
                 </span>
               </label>
-              
+
               <button
                 className="delete-btn"
                 onClick={() => this.deleteTask(task.id)}
@@ -187,6 +201,12 @@ class InputList extends Component {
           filter={filter}
           setFilter={this.setFilter}
           clearCompleted={this.clearCompleted}
+        />
+
+        <PagingTask
+          totalPages={totalPages}
+          currentPage={this.state.currentPage}
+          changePage={this.changePage}
         />
       </div>
     );

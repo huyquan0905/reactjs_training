@@ -9,3 +9,5 @@ export const STATUS_FILTER = {
     ACTIVE: "Active",
     COMPLETED: "Completed",
 }
+
+export const TASKS_PER_PAGE = 5;
