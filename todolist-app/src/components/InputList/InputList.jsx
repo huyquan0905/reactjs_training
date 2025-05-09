@@ -163,6 +163,7 @@ class InputList extends Component {
                   checked={task.completed}
                   onChange={() => this.toggleTask(task.id)}
                 />
+
                 <span
                   className={task.completed ? "completed" : ""}
                   onDoubleClick={() => this.startEditing(task.id, task.text)}
@@ -170,6 +171,7 @@ class InputList extends Component {
                   {task.text}
                 </span>
               </label>
+              
               <button
                 className="delete-btn"
                 onClick={() => this.deleteTask(task.id)}
