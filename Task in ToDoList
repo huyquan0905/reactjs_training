@@ -5,3 +5,13 @@
 * Xử lý thêm chức năng: 
 - Phân trang theo page (max = 5 page)
 - Click double vào task trong list => Focus lên ô input và edit task
+
+
+====================== L5 =================================
+- Tìm hiểu các kiến thức về React Advanced: Code Splitting, Context, Error-Boudaries, Hight Order Components, Portals,... Immer Library.
+- Sử dụng Context để thêm vào chức năng Theme cho trang web, ví dụ như sẽ có 1 nút để bật chế độ dark/light mode.
+- Thay đổi chức năng phân trang thành scroll giống như Mess.
+
+======================= L6 ================================
+
+

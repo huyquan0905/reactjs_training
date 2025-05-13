@@ -3,6 +3,7 @@ import "./input.css";
 import { STATUS_TASK, TASKS_PER_PAGE } from "../../constants/const";
 import FilterList from "./FilterList";
 import PagingTask from "../PagingTask/PagingTask";
+import { ThemeContext } from "../../context/themeContext";
 
 class InputList extends Component {
   state = {
@@ -15,6 +16,8 @@ class InputList extends Component {
   };
 
   TASKS_PER_PAGE = TASKS_PER_PAGE;
+
+  static contextType = ThemeContext;
 
   handleChange = (e) => {
     this.setState({ inputValue: e.target.value });
@@ -141,6 +144,7 @@ class InputList extends Component {
 
   render() {
     const { tasks, inputValue, filter } = this.state;
+    const { themeStyles, toggleFunction } = this.context;
 
     const filteredTasks = tasks.filter((task) => {
       if (filter === STATUS_TASK.ACTIVE) return !task.completed;
@@ -157,7 +161,7 @@ class InputList extends Component {
     const itemsLeft = tasks.filter((t) => !t.completed).length;
 
     return (
-      <div className="todo-container">
+      <div className="todo-container" style={themeStyles}>
         <input
           type="text"
           placeholder="What needs to be done?"
@@ -208,6 +212,10 @@ class InputList extends Component {
           currentPage={this.state.currentPage}
           changePage={this.changePage}
         />
+
+        <button className="change-theme" onClick={toggleFunction}>
+          Change Theme
+        </button>
       </div>
     );
   }
