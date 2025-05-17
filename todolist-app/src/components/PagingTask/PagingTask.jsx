@@ -4,6 +4,8 @@ import "./PagingTask.css";
 class PagingTask extends Component {
   render() {
     const { totalPages, currentPage, changePage } = this.props;
+    console.log("PagingTask", totalPages, currentPage);
+    
     if (totalPages <= 1) return null;
 
     const pages = [];

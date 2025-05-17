@@ -1,9 +1,10 @@
 import React, { Component } from "react";
 import "./App.css";
 import Header from "./components/Header/Header";
-import InputList from "./components/InputList/InputList";
+import HomeMain from "./components/HomeMain/HomeMain";
 import Footer from "./components/Footer/Footer";
 import { ThemeProvider } from "./context/themeContext";
+import { TaskProvider } from "./context/TaskContext";
 
 class App extends Component {
   render() {
@@ -11,7 +12,9 @@ class App extends Component {
       <div className="App">
         <ThemeProvider>
           <Header />
-          <InputList />
+          <TaskProvider>
+            <HomeMain />
+          </TaskProvider>
           <Footer />
         </ThemeProvider>
       </div>

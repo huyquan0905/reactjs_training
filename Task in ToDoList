@@ -13,5 +13,11 @@
 - Thay đổi chức năng phân trang thành scroll giống như Mess.
 
 ======================= L6 ================================
-
-
+Meeting note 13/05:
++) Tách các phần data mock ra thành file riêng => dễ đọc, dễ kiểm soát 
++) Context flexible trong việc control state trong cây component, tuy nhiên cần kiểm soát để:
+	-> tránh mất đi tính đóng gói, tính tái sử dụng của các common component
+	-> tránh việc không kiểm soát được re-render
++) Refactor code theo ES5, ES6
++) Tìm hiểu + ứng dụng HOC (Higher-order Component) để làm lại phần scroll
++) Tìm hiểu + ứng dụng immer.js

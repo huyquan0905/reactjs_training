@@ -11,3 +11,5 @@ export const STATUS_FILTER = {
 }
 
 export const TASKS_PER_PAGE = 5;
+
+export const CHANGE_THEME_BTN = "Change Theme";
