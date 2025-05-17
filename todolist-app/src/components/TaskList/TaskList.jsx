@@ -2,6 +2,7 @@
 import React, { Component } from "react";
 import { TaskContext } from "../../context/TaskContext";
 import { STATUS_TASK } from "../../constants/const";
+import withScroll from "../withScroll";
 
 class TaskList extends Component {
   static contextType = TaskContext;
@@ -11,6 +12,7 @@ class TaskList extends Component {
       tasks,
       filter,
       currentPage,
+      displayTask,
       TASKS_PER_PAGE,
       toggleTask,
       deleteTask,
@@ -23,14 +25,16 @@ class TaskList extends Component {
       return true;
     });
 
-    const currentPageTasks = filteredTasks.slice(
-      (currentPage - 1) * TASKS_PER_PAGE,
-      currentPage * TASKS_PER_PAGE
-    );
+    // const currentPageTasks = filteredTasks.slice(
+    //   (currentPage - 1) * TASKS_PER_PAGE,
+    //   currentPage * TASKS_PER_PAGE
+    // );
+
+    const taskDisplay = filteredTasks.slice(0, displayTask);
 
     return (
       <ul className="todo-list">
-        {currentPageTasks.map((task) => (
+        {taskDisplay.map((task) => (
           <li key={task.id} className="todo-item">
             <label>
               <input
@@ -55,4 +59,4 @@ class TaskList extends Component {
   }
 }
 
-export default TaskList;
+export default withScroll(TaskList);

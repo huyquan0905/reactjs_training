@@ -1,16 +1,25 @@
 // context/TaskContext.js
 import React, { Component, createContext } from "react";
 import { STATUS_TASK, TASKS_PER_PAGE } from "../constants/const";
+import { mockTasks } from "./../mockData";
+import { produce } from "immer";
 
 export const TaskContext = createContext();
 
 export class TaskProvider extends Component {
   state = {
-    tasks: [],
+    tasks: mockTasks,
     inputValue: "",
     filter: STATUS_TASK.ALL,
     editingTaskId: null,
     currentPage: 1,
+    displayTask: 10,
+  };
+
+  loadMore = () => {
+    this.setState((prevState) => ({
+      displayTask: prevState.displayTask + 5,
+    }));
   };
 
   handleChange = (e) => this.setState({ inputValue: e.target.value });
@@ -19,11 +28,10 @@ export class TaskProvider extends Component {
     const { inputValue, tasks, editingTaskId } = this.state;
     if (e.key === "Enter" && inputValue.trim()) {
       if (editingTaskId !== null) {
-        const updatedTasks = tasks.map((task) =>
-          task.id === editingTaskId
-            ? { ...task, text: inputValue.trim() }
-            : task
-        );
+        const updatedTasks = produce(tasks, (draft) => {
+          const task = draft.find((t) => t.id === editingTaskId);
+          if (task) task.text = inputValue.trim();
+        });
         this.setState({
           tasks: updatedTasks,
           inputValue: "",
@@ -73,6 +81,7 @@ export class TaskProvider extends Component {
       <TaskContext.Provider
         value={{
           ...this.state,
+          loadMore: this.loadMore,
           handleChange: this.handleChange,
           handleKeyDown: this.handleKeyDown,
           toggleTask: this.toggleTask,
