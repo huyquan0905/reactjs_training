@@ -1,11 +1,8 @@
 import React, { createContext, useState } from "react";
 
-const ThemeContext = createContext({
-  toggleFunction: () => {},
-  themeStyles: {},
-});
+export const ThemeContext = createContext();
 
-const ThemeProvider = ({ children }) => {
+export const ThemeProvider = ({ children }) => {
   const [toggle, setToggle] = useState(false);
 
   const toggleFunction = () => {
@@ -28,5 +25,3 @@ const ThemeProvider = ({ children }) => {
     </ThemeContext.Provider>
   );
 };
-
-export { ThemeContext, ThemeProvider };

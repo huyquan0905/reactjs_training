@@ -3,6 +3,7 @@ import React, { useEffect, useCallback } from "react";
 const withScroll = (WrappedComponent) => {
   return (props) => {
     const { loadMore } = props;
+    
     const handleScroll = useCallback(() => {
       const scrollTop = window.scrollY;
       const windowHeight = window.innerHeight;
