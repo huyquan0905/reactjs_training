@@ -1,42 +1,32 @@
-import React, { Component } from "react";
+import React, { createContext, useState } from "react";
 
-const ThemeContext = React.createContext({
-  toggle: false,
+const ThemeContext = createContext({
   toggleFunction: () => {},
   themeStyles: {},
 });
 
-class ThemeProvider extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      toggle: false,
-    };
-  }
+const ThemeProvider = ({ children }) => {
+  const [toggle, setToggle] = useState(false);
 
-  toggleFunction = () => {
-    this.setState((prevState) => ({ toggle: !prevState.toggle }));
+  const toggleFunction = () => {
+    setToggle((prev) => !prev);
   };
 
-  render() {
-    const { toggle } = this.state;
-    const themeStyles = {
-      backgroundColor: toggle ? "black" : "white",
-      color: toggle ? "white" : "black",
-    };
+  const themeStyles = {
+    backgroundColor: toggle ? "black" : "white",
+    color: toggle ? "white" : "black",
+  };
 
-    return (
-      <ThemeContext.Provider
-        value={{
-          toggle: toggle,
-          toggleFunction: this.toggleFunction,
-          themeStyles: themeStyles,
-        }}
-      >
-        {this.props.children}
-      </ThemeContext.Provider>
-    );
-  }
-}
+  return (
+    <ThemeContext.Provider
+      value={{
+        toggleFunction,
+        themeStyles,
+      }}
+    >
+      {children}
+    </ThemeContext.Provider>
+  );
+};
 
 export { ThemeContext, ThemeProvider };

@@ -8,11 +8,13 @@
 
 
 ====================== L5 =================================
+
 - Tìm hiểu các kiến thức về React Advanced: Code Splitting, Context, Error-Boudaries, Hight Order Components, Portals,... Immer Library.
 - Sử dụng Context để thêm vào chức năng Theme cho trang web, ví dụ như sẽ có 1 nút để bật chế độ dark/light mode.
 - Thay đổi chức năng phân trang thành scroll giống như Mess.
 
 ======================= L6 ================================
+
 Meeting note 13/05:
 +) Tách các phần data mock ra thành file riêng => dễ đọc, dễ kiểm soát 
 +) Context flexible trong việc control state trong cây component, tuy nhiên cần kiểm soát để:
@@ -21,3 +23,132 @@ Meeting note 13/05:
 +) Refactor code theo ES5, ES6
 +) Tìm hiểu + ứng dụng HOC (Higher-order Component) để làm lại phần scroll
 +) Tìm hiểu + ứng dụng immer.js
+
+
+======================= L7 ================================
+
+- Theme Provider -> Quản lý theme là chính, nếu toggle là chưa clear ?
+- Với immer.js -> draft[index].text = inputValue.trim()
+- Dùng immer sẽ chọc thẳng vào array sau đó để action (edit, delete, ...). Còn nghiệp vụ thông thường sẽ là duyệt mảng, tìm element cần action và sau đó action.
+- Nếu đưa tất cả các nghiệp vụ xoay quanh task -> Không phát sinh bất kỳ một case xử lý gì giữa việc giao tiếp giữa các cây component. Về mặt bản chất thì cây component sẽ chỉ có 1 component ?
+- Không có tính common, không có tính đóng gói 
+- HOC linh động ở nơi nó được gọi đến, nên nếu trong HOC có 1 state lấy từ context -> Nó sẽ thu hẹp đi sự linh hoạt, tính tái sử dụng của nó.
+
+=> Chuyển đổi từ Class Component -> Function Component
+
+======================= L8 ================================
+
+-> Lifting state up react
+- Composition vs Inheritance: 
+- Code-Splitting: 
+- Portals: 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

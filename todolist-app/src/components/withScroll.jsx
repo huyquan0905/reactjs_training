@@ -1,32 +1,24 @@
-import React, { Component } from "react";
-import { TaskContext } from "../context/TaskContext";
+import React, { useEffect, useCallback } from "react";
 
 const withScroll = (WrappedComponent) => {
-  return class extends Component {
-    static contextType = TaskContext;
-
-    componentDidMount() {
-      window.addEventListener("scroll", this.handleScroll);
-    }
-
-    componentWillUnmount() {
-      window.removeEventListener("scroll", this.handleScroll);
-    }
-
-    handleScroll = () => {
-      const { loadMore } = this.context;
+  return (props) => {
+    const { loadMore } = props;
+    const handleScroll = useCallback(() => {
       const scrollTop = window.scrollY;
       const windowHeight = window.innerHeight;
       const docHeight = document.documentElement.offsetHeight;
 
       if (scrollTop + windowHeight >= docHeight - 100) {
-        loadMore();
+        loadMore?.();
       }
-    };
+    }, [loadMore]);
 
-    render() {
-      return <WrappedComponent {...this.props} />;
-    }
+    useEffect(() => {
+      window.addEventListener("scroll", handleScroll);
+      return () => window.removeEventListener("scroll", handleScroll);
+    }, [handleScroll]);
+
+    return <WrappedComponent {...props} />;
   };
 };
 

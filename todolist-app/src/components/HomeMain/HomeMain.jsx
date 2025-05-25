@@ -1,56 +1,104 @@
-import React, { Component } from "react";
+import React, { useContext, useState, useCallback } from "react";
 import { ThemeContext } from "../../context/themeContext";
-import { TaskContext } from "../../context/TaskContext";
 import InputField from "../InputField/InputField";
 import TaskList from "../TaskList/TaskList";
 import FilterList from "../FilterTask/FilterList";
 import PagingTask from "../PagingTask/PagingTask";
-import { CHANGE_THEME_BTN } from "../../constants/const";
+import {
+  CHANGE_THEME_BTN,
+  STATUS_TASK,
+  TASKS_PER_PAGE,
+} from "../../constants/const";
+import { mockTasks } from "../../mockData";
+import { produce } from "immer";
 
-class HomeMain extends Component {
-  static contextType = ThemeContext;
+const HomeMain = () => {
+  const theme = useContext(ThemeContext);
+  const [tasks, setTasks] = useState(mockTasks);
+  const [inputValue, setInputValue] = useState("");
+  const [filter, setFilter] = useState(STATUS_TASK.ALL);
+  const [editingTaskId, setEditingTaskId] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
 
-  render() {
-    const theme = this.context;
+  const itemsLeft = tasks.filter((t) => !t.completed).length;
+  const totalPages = Math.ceil(tasks.length / TASKS_PER_PAGE);
 
-    return (
-      <TaskContext.Consumer>
-        {(taskContext) => {
-          const itemsLeft = taskContext.tasks.filter(
-            (t) => !t.completed
-          ).length;
-          const totalPages = Math.ceil(
-            taskContext.tasks.length / taskContext.TASKS_PER_PAGE
-          );
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && inputValue.trim()) {
+      if (editingTaskId !== null) {
+        const updatedTasks = produce(tasks, (draft) => {
+          const task = draft.find((t) => t.id === editingTaskId);
+          if (task) task.text = inputValue.trim();
+        });
+        setTasks(updatedTasks);
+        // setTimeout(() => {
+        setInputValue("");
+        // }, 0);
+        setEditingTaskId(null);
+      } else {
+        const newTask = {
+          id: Date.now(),
+          text: inputValue.trim(),
+          completed: false,
+        };
+        setTasks([...tasks, newTask]);
+        // setTimeout(() => {
+        setInputValue("");
+        // }, 0);
+      }
+    }
+    // Clear input field nếu không muốn edit nữa
+    if (e.key === "Escape") {
+      setEditingTaskId(null);
+      setInputValue("");
+      console.log("123");
+    }
+  };
 
-          return (
-            <div className="todo-container" style={theme.themeStyles}>
-              <InputField />
+  const startEditing = (id, currentText) => {
+    setEditingTaskId(id);
+    console.log("Editing task ID:", currentText);
+    setInputValue(currentText);
+  };
 
-              <TaskList />
+  const changePage = (page) => {
+    setCurrentPage(page);
+  };
 
-              <FilterList
-                itemsLeft={itemsLeft}
-                filter={taskContext.filter}
-                setFilter={taskContext.setFilter}
-                clearCompleted={taskContext.clearCompleted}
-              />
+  return (
+    <div className="todo-container" style={theme.themeStyles}>
+      <InputField
+        handleKeyDown={handleKeyDown}
+        inputValue={inputValue}
+        setInputValue={setInputValue}
+        editingTaskId={editingTaskId}
+      />
 
-              <PagingTask
-                totalPages={totalPages}
-                currentPage={taskContext.currentPage}
-                changePage={taskContext.changePage}
-              />
+      <TaskList
+        tasks={tasks}
+        setTasks={setTasks}
+        filter={filter}
+        startEditing={startEditing}
+      />
 
-              <button className="change-theme" onClick={theme.toggleFunction}>
-                {CHANGE_THEME_BTN}
-              </button>
-            </div>
-          );
-        }}
-      </TaskContext.Consumer>
-    );
-  }
-}
+      <FilterList
+        setTask={setTasks}
+        itemsLeft={itemsLeft}
+        filter={filter}
+        setFilter={setFilter}
+      />
+
+      <PagingTask
+        totalPages={totalPages}
+        currentPage={currentPage}
+        changePage={changePage}
+      />
+
+      <button className="change-theme" onClick={theme.toggleFunction}>
+        {CHANGE_THEME_BTN}
+      </button>
+    </div>
+  );
+};
 
 export default HomeMain;

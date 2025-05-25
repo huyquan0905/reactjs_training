@@ -1,31 +1,35 @@
-import React, { Component } from "react";
-import { TaskContext } from "../../context/TaskContext";
+import { useEffect, useRef } from "react";
 import "./input.css";
 
-class InputField extends Component {
-  static contextType = TaskContext;
+const InputField = ({
+  handleKeyDown,
+  inputValue,
+  setInputValue,
+  editingTaskId,
+}) => {
+  const inputRef = useRef(null);
 
-  componentDidUpdate() {
-    if (this.context.editingTaskId !== null) {
-      this.inputRef?.focus();
+  const handleChange = (e) => {
+    setInputValue(e.target.value);
+  };
+
+  useEffect(() => {
+    if (editingTaskId !== null && inputRef.current) {
+      inputRef.current.focus();
     }
-  }
+  }, [editingTaskId]);
 
-  render() {
-    const { inputValue, handleChange, handleKeyDown } = this.context;
-
-    return (
-      <input
-        type="text"
-        className="todo-input"
-        placeholder="What needs to be done?"
-        value={inputValue}
-        onChange={handleChange}
-        onKeyDown={handleKeyDown}
-        ref={(ref) => (this.inputRef = ref)}
-      />
-    );
-  }
-}
+  return (
+    <input
+      type="text"
+      className="todo-input"
+      placeholder="What needs to be done?"
+      value={inputValue}
+      onChange={handleChange}
+      onKeyDown={handleKeyDown}
+      ref={inputRef}
+    />
+  );
+};
 
 export default InputField;
