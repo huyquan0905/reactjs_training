@@ -43,14 +43,23 @@ Meeting note 13/05:
 - Code-Splitting: 
 - Portals: 
 
-*** Lý thuyết sâu hơn về useMemo, useCallback, Clousue, useEffect.
+======================= L9 ================================
+- Review code:
++) inputValue, editingId nằm ở trong InputField => Thay đổi state chỉ component đó thay đổi ? Không re-render component cha
++) Không cần tường minh như TaskListWithScroll -> 
++) Cú pháp code cần sửa: 									x
+  const filteredTasks = tasks.filter((task) => {
+    if (filter === STATUS_TASK.ACTIVE) return !task.completed;
+    if (filter === STATUS_TASK.COMPLETED) return task.completed;
+    return true;
+  }); 
++) State từ thằng input ref để không gây re-render.
++) Nơi nào khai báo state -> Triênr khai những action xoay quanh state.
++) TaskList > ToDoItem chứ không phải render thẳng ra ul li.					x
++) Sửa immer produce                       							x
++) Chuyển HOC => Custom Hook.
 
-
-
-
-
-
-
+*** Lý thuyết sâu hơn về useMemo, useCallback, Clousue, useEffect. -> Sâu về tư tưởng: memoization ???
 
 
 

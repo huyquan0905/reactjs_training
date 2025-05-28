@@ -1,23 +1,33 @@
-import { useEffect, useRef } from "react";
+import React, { useRef, useState, useImperativeHandle, forwardRef } from "react";
 import "./input.css";
 
-const InputField = ({
-  handleKeyDown,
-  inputValue,
-  setInputValue,
-  editingTaskId,
-}) => {
+const InputField = forwardRef(({ onSubmit }, ref) => {
   const inputRef = useRef(null);
+  const [inputValue, setInputValue] = useState("");
+  const [editingId, setEditingId] = useState(null);
 
-  const handleChange = (e) => {
-    setInputValue(e.target.value);
+  const handleChange = (e) => setInputValue(e.target.value);
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && inputValue.trim()) {
+      onSubmit(inputValue.trim(), editingId);
+      setInputValue("");
+      setEditingId(null);
+    }
+
+    if (e.key === "Escape") {
+      setInputValue("");
+      setEditingId(null);
+    }
   };
 
-  useEffect(() => {
-    if (editingTaskId !== null && inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, [editingTaskId]);
+  useImperativeHandle(ref, () => ({
+    onEdit: (id, currentText) => {
+      setEditingId(id);
+      setInputValue(currentText);
+      inputRef.current?.focus();
+    },
+  }));
 
   return (
     <input
@@ -30,6 +40,6 @@ const InputField = ({
       ref={inputRef}
     />
   );
-};
+});
 
 export default InputField;

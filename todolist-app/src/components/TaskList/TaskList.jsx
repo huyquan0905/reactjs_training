@@ -1,17 +1,15 @@
-// components/TaskList/TaskList.js
-import React, { useContext } from "react";
-import { LoadMoreContext } from "../../context/loadMoreContext";
-import { STATUS_TASK } from "../../constants/const";
-import withScroll from "../withScroll";
+import React, { useState, useCallback } from "react";
+import useScroll from "../../hooks/useInfiniteScroll";
+import ToDoItem from "./ToDoItem";
 
-const TaskListBase = ({ tasks, setTasks, filter, startEditing }) => {
-  const { displayTask } = useContext(LoadMoreContext);
+const TaskList = ({ setTasks, filteredTask, inputRef }) => {
+  const [displayTask, setDisplayTask] = useState(10);
 
-  const filteredTasks = tasks.filter((task) => {
-    if (filter === STATUS_TASK.ACTIVE) return !task.completed;
-    if (filter === STATUS_TASK.COMPLETED) return task.completed;
-    return true;
-  });
+  const loadMore = useCallback(() => {
+    setDisplayTask((prev) => prev + 5);
+  }, []);
+
+  useScroll(loadMore);
 
   const toggleTask = (id) => {
     setTasks((prevTasks) =>
@@ -25,52 +23,20 @@ const TaskListBase = ({ tasks, setTasks, filter, startEditing }) => {
     setTasks((prevTasks) => prevTasks.filter((task) => task.id !== id));
   };
 
-  // const currentPageTasks = filteredTasks.slice(
-  //   (currentPage - 1) * TASKS_PER_PAGE,
-  //   currentPage * TASKS_PER_PAGE
-  // );
-
-  const taskDisplay = filteredTasks.slice(0, displayTask);
+  const taskDisplay = filteredTask.slice(0, displayTask);
 
   return (
     <ul className="todo-list">
       {taskDisplay.map((task) => (
-        <li
+        <ToDoItem
           key={task.id}
-          className="todo-item"
-          onDoubleClick={() => startEditing(task.id, task.text)}
-        >
-          <label>
-            <input
-              type="checkbox"
-              checked={task.completed}
-              onChange={() => toggleTask(task.id)}
-            />
-            <span className={task.completed ? "completed" : ""}>
-              {task.text}
-            </span>
-          </label>
-          <button className="delete-btn" onClick={() => deleteTask(task.id)}>
-            x
-          </button>
-        </li>
+          task={task}
+          onToggle={toggleTask}
+          onDelete={deleteTask}
+          inputRef={inputRef}
+        />
       ))}
     </ul>
-  );
-};
-
-const TaskListWithScroll = withScroll(TaskListBase);
-
-const TaskList = (props) => {
-  const { loadMore, displayTask } = useContext(LoadMoreContext);
-  console.log(props);
-
-  return (
-    <TaskListWithScroll
-      {...props}
-      loadMore={loadMore}
-      displayTask={displayTask}
-    />
   );
 };
 

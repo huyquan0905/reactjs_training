@@ -5,11 +5,8 @@ import {
   CLEAR_COMPLETED,
 } from "../../constants/const";
 
-const FilterList = ({ setTask, itemsLeft, filter, setFilter }) => {
+const FilterList = ({ itemsLeft, filter, setFilter, clearComplete }) => {
   
-  const clearCompleted = () => {
-    setTask((prevTasks) => prevTasks.filter((task) => !task.completed));
-  };
 
   return (
     <div className="todo-footer">
@@ -36,7 +33,7 @@ const FilterList = ({ setTask, itemsLeft, filter, setFilter }) => {
           {STATUS_FILTER.COMPLETED}
         </button>
       </div>
-      <button onClick={clearCompleted}>{CLEAR_COMPLETED}</button>
+      <button onClick={() => clearComplete()}>{CLEAR_COMPLETED}</button>
     </div>
   );
 };

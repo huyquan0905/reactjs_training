@@ -1,4 +1,4 @@
-import React, { useContext, useState, useCallback } from "react";
+import React, { useContext, useState, useRef } from "react";
 import { ThemeContext } from "../../context/themeContext";
 import InputField from "../InputField/InputField";
 import TaskList from "../TaskList/TaskList";
@@ -15,70 +15,58 @@ import { produce } from "immer";
 const HomeMain = () => {
   const theme = useContext(ThemeContext);
   const [tasks, setTasks] = useState(mockTasks);
-  const [inputValue, setInputValue] = useState("");
   const [filter, setFilter] = useState(STATUS_TASK.ALL);
-  const [editingTaskId, setEditingTaskId] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-
+  const inputRef = useRef();
   const itemsLeft = tasks.filter((t) => !t.completed).length;
   const totalPages = Math.ceil(tasks.length / TASKS_PER_PAGE);
 
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter" && inputValue.trim()) {
-      if (editingTaskId !== null) {
-        const updatedTasks = produce(tasks, (draft) => {
-          const task = draft.find((t) => t.id === editingTaskId);
-          if (task) task.text = inputValue.trim();
-        });
-        setTasks(updatedTasks);
-        // setTimeout(() => {
-        setInputValue("");
-        // }, 0);
-        setEditingTaskId(null);
-      } else {
-        const newTask = {
-          id: Date.now(),
-          text: inputValue.trim(),
-          completed: false,
-        };
-        setTasks([...tasks, newTask]);
-        // setTimeout(() => {
-        setInputValue("");
-        // }, 0);
-      }
-    }
-    // Clear input field nếu không muốn edit nữa
-    if (e.key === "Escape") {
-      setEditingTaskId(null);
-      setInputValue("");
-      console.log("123");
+  const handleSubmit = (value, editingId) => {
+    if (editingId !== null) {
+      const index = tasks.findIndex((t) => t.id === editingId);
+      const updatedTasks = produce(tasks, (draft) => {
+        draft[index].text = value;
+      });
+      setTasks(updatedTasks);
+    } else {
+      const newTask = {
+        id: Date.now(),
+        text: value,
+        completed: false,
+      };
+      setTasks([...tasks, newTask]);
     }
   };
 
   const startEditing = (id, currentText) => {
-    setEditingTaskId(id);
-    console.log("Editing task ID:", currentText);
-    setInputValue(currentText);
+    inputRef.current?.onEdit(id, currentText);
   };
 
   const changePage = (page) => {
     setCurrentPage(page);
   };
 
+  const filteredTasks = tasks.filter((task) =>
+    filter === STATUS_TASK.ACTIVE
+      ? !task.completed
+      : filter === STATUS_TASK.COMPLETED
+      ? task.completed
+      : true
+  );
+
+  const clearCompleted = () => {
+    setTasks((prevTasks) => prevTasks.filter((task) => !task.completed));
+  };
+
   return (
     <div className="todo-container" style={theme.themeStyles}>
-      <InputField
-        handleKeyDown={handleKeyDown}
-        inputValue={inputValue}
-        setInputValue={setInputValue}
-        editingTaskId={editingTaskId}
-      />
+      <InputField ref={inputRef} onSubmit={handleSubmit} />
 
       <TaskList
-        tasks={tasks}
         setTasks={setTasks}
         filter={filter}
-        startEditing={startEditing}
+       inputRef={inputRef}
+        filteredTask={filteredTasks}
       />
 
       <FilterList
@@ -86,13 +74,14 @@ const HomeMain = () => {
         itemsLeft={itemsLeft}
         filter={filter}
         setFilter={setFilter}
+        clearCompleted={clearCompleted}
       />
 
-      <PagingTask
+      {/* <PagingTask
         totalPages={totalPages}
         currentPage={currentPage}
         changePage={changePage}
-      />
+      /> */}
 
       <button className="change-theme" onClick={theme.toggleFunction}>
         {CHANGE_THEME_BTN}
