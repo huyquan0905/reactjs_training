@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from "react";
-import useScroll from "../../hooks/useInfiniteScroll";
+import useScroll from "../useScoll";
 import ToDoItem from "./ToDoItem";
 
 const TaskList = ({ setTasks, filteredTask, inputRef }) => {
