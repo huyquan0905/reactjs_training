@@ -38,10 +38,6 @@ const HomeMain = () => {
     }
   };
 
-  const startEditing = (id, currentText) => {
-    inputRef.current?.onEdit(id, currentText);
-  };
-
   const changePage = (page) => {
     setCurrentPage(page);
   };
@@ -65,12 +61,11 @@ const HomeMain = () => {
       <TaskList
         setTasks={setTasks}
         filter={filter}
-       inputRef={inputRef}
+        inputRef={inputRef}
         filteredTask={filteredTasks}
       />
 
       <FilterList
-        setTask={setTasks}
         itemsLeft={itemsLeft}
         filter={filter}
         setFilter={setFilter}
