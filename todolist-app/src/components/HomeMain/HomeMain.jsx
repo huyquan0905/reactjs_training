@@ -56,15 +56,14 @@ const HomeMain = () => {
           text: value,
         };
 
-        const res = await apiClient.put(TASK_UPDATE, payload);
-        const updatedTask = res.data.data;
-        console.log("Updated task:", res);
-        
-        setTasks((prevTasks) =>
-          prevTasks.map((t) =>
-            t._id === updatedTask._id ? { ...t, ...updatedTask } : t
-          )
-        );
+        const response = await apiClient.put(TASK_UPDATE, payload);
+        if (response.status === 200) {
+          const index = tasks.findIndex((t) => t._id === editingId);
+          const updatedTasks = produce(tasks, (draft) => {
+            draft[index].text = value;
+          });
+          setTasks(updatedTasks);
+        }
       } catch (err) {
         console.error("Edit task error:", err);
       }
