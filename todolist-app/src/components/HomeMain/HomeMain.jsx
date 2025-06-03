@@ -1,4 +1,4 @@
-import React, { useContext, useState, useRef } from "react";
+import React, { useContext, useState, useRef, useEffect } from "react";
 import { ThemeContext } from "../../context/themeContext";
 import InputField from "../InputField/InputField";
 import TaskList from "../TaskList/TaskList";
@@ -9,19 +9,40 @@ import {
   STATUS_TASK,
   TASKS_PER_PAGE,
 } from "../../constants/const";
-import { mockTasks } from "../../mockData";
 import { produce } from "immer";
+import { apiClient } from "../../api/helpers/api_helper";
+import { TASK_ADD, TASKS_GET } from "../../constants/url";
 
 const HomeMain = () => {
   const theme = useContext(ThemeContext);
-  const [tasks, setTasks] = useState(mockTasks);
+  const [tasks, setTasks] = useState([]);
+  const [loadingGetTasks, setLoadingGetTasks] = useState(true);
+  const [loadingAddTask, setLoadingAddTask] = useState(false);
+
   const [filter, setFilter] = useState(STATUS_TASK.ALL);
   const [currentPage, setCurrentPage] = useState(1);
   const inputRef = useRef();
-  const itemsLeft = tasks.filter((t) => !t.completed).length;
   const totalPages = Math.ceil(tasks.length / TASKS_PER_PAGE);
 
-  const handleSubmit = (value, editingId) => {
+  useEffect(() => {
+    const getTasks = async () => {
+      try {
+        const response = await apiClient.get(TASKS_GET);
+        setTasks(response.data.data);
+      } catch (err) {
+        console.error("Error:", err);
+      } finally {
+        setLoadingGetTasks(false);
+      }
+    };
+
+    getTasks();
+  }, []);
+
+
+  const itemsLeft = tasks.filter((t) => !t.completed).length;
+
+  const handleSubmit = async (value, editingId) => {
     if (editingId !== null) {
       const index = tasks.findIndex((t) => t.id === editingId);
       const updatedTasks = produce(tasks, (draft) => {
@@ -29,12 +50,22 @@ const HomeMain = () => {
       });
       setTasks(updatedTasks);
     } else {
-      const newTask = {
-        id: Date.now(),
-        text: value,
-        completed: false,
-      };
-      setTasks([...tasks, newTask]);
+      setLoadingAddTask(true);
+      try {
+        const newTask = {
+          text: value,
+          completed: false,
+        };
+
+        const taskNew = await apiClient.post(TASK_ADD, newTask);
+        const savedTask = taskNew.data.data;
+
+        setTasks((prev) => [savedTask, ...prev]);
+      } catch (err) {
+        console.error("Error:", err);
+      } finally {
+        setLoadingAddTask(false);
+      }
     }
   };
 
@@ -56,13 +87,18 @@ const HomeMain = () => {
 
   return (
     <div className="todo-container" style={theme.themeStyles}>
-      <InputField ref={inputRef} onSubmit={handleSubmit} />
+      <InputField
+        ref={inputRef}
+        onSubmit={handleSubmit}
+        disabled={loadingAddTask}
+      />
 
       <TaskList
         setTasks={setTasks}
         filter={filter}
         inputRef={inputRef}
         filteredTask={filteredTasks}
+        loading={loadingGetTasks}
       />
 
       <FilterList

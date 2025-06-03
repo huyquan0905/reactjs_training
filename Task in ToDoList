@@ -57,12 +57,22 @@ Meeting note 13/05:
 +) Nơi nào khai báo state -> Triênr khai những action xoay quanh state.
 +) TaskList > ToDoItem chứ không phải render thẳng ra ul li.					x
 +) Sửa immer produce                       							x
-+) Chuyển HOC => Custom Hook.
++) Chuyển HOC => Custom Hook.									x
 
 *** Lý thuyết sâu hơn về useMemo, useCallback, Clousue, useEffect. -> Sâu về tư tưởng: memoization ???
 
 
+==============================================================
 
++) Cách sử dụng không giống 1 thằng hook thông thường -> Phổ biến nó là 1 component, nó sẽ trả về data, thay vì will ?
++) inputRef ở HomeMain -> Sử dụng luôn -> Truyền xuống component con là 1 function => Chứ không truyền inputRef xuống ? => Cách hiện tại đang không tường minh, không bị phân tán logic
++) Có thể truyền ref như 1 props (không cần sử dụng forwardRef())
++) useEffect: 
+      -  
+      
+      
+=======> MockAPI fake backend: +) CRUD, xử lý promise
+			       +) Trải nghiệm của end user UX
 
 
 

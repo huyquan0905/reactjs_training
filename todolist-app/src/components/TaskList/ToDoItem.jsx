@@ -1,9 +1,9 @@
 import React from "react";
 
-const ToDoItem = ({ task, onToggle, onDelete, inputRef }) => {
+const ToDoItem = ({ task, onToggle, onDelete, inputRef}) => {
   
   const handleDoubleClick = () => {
-    inputRef?.current?.onEdit(task.id, task.text);
+    inputRef?.current?.onEdit(task._id, task.text);
   };
 
   return (
@@ -18,7 +18,7 @@ const ToDoItem = ({ task, onToggle, onDelete, inputRef }) => {
           {task.text}
         </span>
       </label>
-      <button className="delete-btn" onClick={() => onDelete(task.id)}>
+      <button className="delete-btn" onClick={() => onDelete(task._id)}>
         x
       </button>
     </li>
