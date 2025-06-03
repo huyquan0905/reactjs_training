@@ -31,7 +31,7 @@ const TaskList = ({ setTasks, filteredTask, onEdit, loading }) => {
         )
       );
     } catch (error) {
-      console.error("Failed to toggle task:", error);
+      console.error("Error:", error);
     }
   };
 
