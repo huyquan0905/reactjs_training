@@ -11,7 +11,7 @@ import {
 } from "../../constants/const";
 import { produce } from "immer";
 import { apiClient } from "../../api/helpers/api_helper";
-import { TASK_ADD, TASKS_GET } from "../../constants/url";
+import { TASK_ADD, TASKS_GET, TASK_UPDATE } from "../../constants/url";
 
 const HomeMain = () => {
   const theme = useContext(ThemeContext);
@@ -39,16 +39,35 @@ const HomeMain = () => {
     getTasks();
   }, []);
 
-
   const itemsLeft = tasks.filter((t) => !t.completed).length;
 
   const handleSubmit = async (value, editingId) => {
+    // if (editingId !== null) {
+    //   const index = tasks.findIndex((t) => t.id === editingId);
+    //   const updatedTasks = produce(tasks, (draft) => {
+    //     draft[index].text = value;
+    //   });
+    //   setTasks(updatedTasks);
+    // }
     if (editingId !== null) {
-      const index = tasks.findIndex((t) => t.id === editingId);
-      const updatedTasks = produce(tasks, (draft) => {
-        draft[index].text = value;
-      });
-      setTasks(updatedTasks);
+      try {
+        const payload = {
+          _id: editingId,
+          text: value,
+        };
+
+        const res = await apiClient.put(TASK_UPDATE, payload);
+        const updatedTask = res.data.data;
+        console.log("Updated task:", res);
+        
+        setTasks((prevTasks) =>
+          prevTasks.map((t) =>
+            t._id === updatedTask._id ? { ...t, ...updatedTask } : t
+          )
+        );
+      } catch (err) {
+        console.error("Edit task error:", err);
+      }
     } else {
       setLoadingAddTask(true);
       try {
