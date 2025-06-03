@@ -6,7 +6,7 @@ import { TASKS_REMOVE } from "../../constants/url";
 import AcModal from "../atoms/AcModal";
 import "./taskList.css";
 
-const TaskList = ({ setTasks, filteredTask, inputRef, loading }) => {
+const TaskList = ({ setTasks, filteredTask, onEdit, loading }) => {
   const [displayTask, setDisplayTask] = useState(10);
   const [taskToDelete, setTaskToDelete] = useState(null);
 
@@ -64,7 +64,7 @@ const TaskList = ({ setTasks, filteredTask, inputRef, loading }) => {
             task={task}
             onToggle={toggleTask}
             onDelete={() => handleDeleteClick(task._id)}
-            inputRef={inputRef}
+            onEdit={onEdit}
           />
         ))}
       </ul>

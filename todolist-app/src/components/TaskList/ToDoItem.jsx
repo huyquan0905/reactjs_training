@@ -1,9 +1,9 @@
 import React from "react";
 
-const ToDoItem = ({ task, onToggle, onDelete, inputRef}) => {
+const ToDoItem = ({ task, onToggle, onDelete, onEdit}) => {
   
   const handleDoubleClick = () => {
-    inputRef?.current?.onEdit(task._id, task.text);
+    onEdit(task._id, task.text);
   };
 
   return (

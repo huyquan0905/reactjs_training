@@ -39,6 +39,10 @@ const HomeMain = () => {
     getTasks();
   }, []);
 
+  const handleEdit = (id, text) => {
+    inputRef.current?.onEdit(id, text);
+  };
+
   const itemsLeft = tasks.filter((t) => !t.completed).length;
 
   const handleSubmit = async (value, editingId) => {
@@ -114,9 +118,9 @@ const HomeMain = () => {
       <TaskList
         setTasks={setTasks}
         filter={filter}
-        inputRef={inputRef}
         filteredTask={filteredTasks}
         loading={loadingGetTasks}
+        onEdit={handleEdit}
       />
 
       <FilterList
