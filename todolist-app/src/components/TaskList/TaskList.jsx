@@ -2,7 +2,7 @@ import React, { useState, useCallback } from "react";
 import useScroll from "../useScoll";
 import ToDoItem from "./ToDoItem";
 import { apiClient } from "../../api/helpers/api_helper";
-import { TASKS_REMOVE } from "../../constants/url";
+import { TASK_UPDATE,TASKS_REMOVE } from "../../constants/url";
 import AcModal from "../atoms/AcModal";
 import "./taskList.css";
 
@@ -16,12 +16,23 @@ const TaskList = ({ setTasks, filteredTask, onEdit, loading }) => {
 
   useScroll(loadMore);
 
-  const toggleTask = (id) => {
-    setTasks((prevTasks) =>
-      prevTasks.map((task) =>
-        task.id === id ? { ...task, completed: !task.completed } : task
-      )
-    );
+  const toggleTask = async (id, currentStatus) => {
+    try {
+      const updatedStatus = !currentStatus;
+
+      await apiClient.put(TASK_UPDATE, {
+        _id: id,
+        completed: updatedStatus,
+      });
+
+      setTasks((prevTasks) =>
+        prevTasks.map((task) =>
+          task._id === id ? { ...task, completed: updatedStatus } : task
+        )
+      );
+    } catch (error) {
+      console.error("Failed to toggle task:", error);
+    }
   };
 
   const handleDeleteClick = (taskId) => {
@@ -62,7 +73,7 @@ const TaskList = ({ setTasks, filteredTask, onEdit, loading }) => {
           <ToDoItem
             key={task._id}
             task={task}
-            onToggle={toggleTask}
+            onToggle={() => toggleTask(task._id, task.completed)}
             onDelete={() => handleDeleteClick(task._id)}
             onEdit={onEdit}
           />
