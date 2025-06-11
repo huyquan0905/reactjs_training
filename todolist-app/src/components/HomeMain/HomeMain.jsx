@@ -1,4 +1,4 @@
-import React, { useContext, useState, useRef, useEffect } from "react";
+import React, { useContext, useState, useRef, useEffect, useMemo } from "react";
 import { ThemeContext } from "../../context/themeContext";
 import InputField from "../InputField/InputField";
 import TaskList from "../TaskList/TaskList";
@@ -12,90 +12,95 @@ import {
 import { produce } from "immer";
 import { apiClient } from "../../api/helpers/api_helper";
 import { TASK_ADD, TASKS_GET, TASK_UPDATE } from "../../constants/url";
+import { useDispatch, useSelector } from "react-redux";
+import { getTasks, addTask, updateTask } from "../../redux/tasks/thunk";
+import { clearCompleted } from "../../redux/tasks/reducer";
 
 const HomeMain = () => {
   const theme = useContext(ThemeContext);
-  const [tasks, setTasks] = useState([]);
-  const [loadingGetTasks, setLoadingGetTasks] = useState(true);
-  const [loadingAddTask, setLoadingAddTask] = useState(false);
+  const dispatch = useDispatch();
+  const { tasks, isLoadingGet } = useSelector((state) => state.tasks);
 
   const [filter, setFilter] = useState(STATUS_TASK.ALL);
   const [currentPage, setCurrentPage] = useState(1);
   const inputRef = useRef();
-  const totalPages = Math.ceil(tasks.length / TASKS_PER_PAGE);
+  // const totalPages = Math.ceil(tasks.length / TASKS_PER_PAGE);
 
   useEffect(() => {
-    const getTasks = async () => {
-      try {
-        const response = await apiClient.get(TASKS_GET);
-        setTasks(response.data.data);
-      } catch (err) {
-        console.error("Error:", err);
-      } finally {
-        setLoadingGetTasks(false);
-      }
-    };
-
-    getTasks();
+    dispatch(getTasks());
   }, []);
 
   const handleEdit = (id, text) => {
     inputRef.current?.onEdit(id, text);
   };
 
-  const itemsLeft = tasks.filter((t) => !t.completed).length;
+  const tasksData = useMemo(() => tasks.data ?? [], [tasks.data]);
 
-  const handleSubmit = async (value, editingId) => {
-    // if (editingId !== null) {
-    //   const index = tasks.findIndex((t) => t.id === editingId);
-    //   const updatedTasks = produce(tasks, (draft) => {
-    //     draft[index].text = value;
-    //   });
-    //   setTasks(updatedTasks);
-    // }
-    if (editingId !== null) {
-      try {
-        const payload = {
-          _id: editingId,
-          text: value,
-        };
+  const itemsLeft = tasksData.filter((t) => !t.completed).length;
 
-        const response = await apiClient.put(TASK_UPDATE, payload);
-        if (response.status === 200) {
-          const index = tasks.findIndex((t) => t._id === editingId);
-          const updatedTasks = produce(tasks, (draft) => {
-            draft[index].text = value;
-          });
-          setTasks(updatedTasks);
-        }
-      } catch (err) {
-        console.error("Edit task error:", err);
-      }
+  // const handleSubmit = async (value, editingId) => {
+  //   // if (editingId !== null) {
+  //   //   const index = tasks.findIndex((t) => t.id === editingId);
+  //   //   const updatedTasks = produce(tasks, (draft) => {
+  //   //     draft[index].text = value;
+  //   //   });
+  //   //   setTasks(updatedTasks);
+  //   // }
+  //   if (editingId !== null) {
+  //     try {
+  //       const payload = {
+  //         _id: editingId,
+  //         text: value,
+  //       };
+
+  //       const response = await apiClient.put(TASK_UPDATE, payload);
+  //       if (response.status === 200) {
+  //         const index = tasks.findIndex((t) => t._id === editingId);
+  //         const updatedTasks = produce(tasks, (draft) => {
+  //           draft[index].text = value;
+  //         });
+  //         setTasks(updatedTasks);
+  //       }
+  //     } catch (err) {
+  //       console.error("Edit task error:", err);
+  //     }
+  //   } else {
+  //     setLoadingAddTask(true);
+  //     try {
+  //       const newTask = {
+  //         text: value,
+  //         completed: false,
+  //       };
+
+  //       const taskNew = await apiClient.post(TASK_ADD, newTask);
+  //       const savedTask = taskNew.data.data;
+
+  //       setTasks((prev) => [savedTask, ...prev]);
+  //     } catch (err) {
+  //       console.error("Error:", err);
+  //     } finally {
+  //       setLoadingAddTask(false);
+  //     }
+  //   }
+  // };
+
+  const handleSubmit = (value, editingId) => {
+    if (editingId) {
+      dispatch(updateTask({ id: editingId, text: value }));
     } else {
-      setLoadingAddTask(true);
-      try {
-        const newTask = {
-          text: value,
-          completed: false,
-        };
-
-        const taskNew = await apiClient.post(TASK_ADD, newTask);
-        const savedTask = taskNew.data.data;
-
-        setTasks((prev) => [savedTask, ...prev]);
-      } catch (err) {
-        console.error("Error:", err);
-      } finally {
-        setLoadingAddTask(false);
-      }
+      dispatch(addTask({ text: value, completed: false }));
     }
   };
 
-  const changePage = (page) => {
-    setCurrentPage(page);
+  const handleClearCompleted = () => {
+    dispatch(clearCompleted());
   };
 
-  const filteredTasks = tasks.filter((task) =>
+  // const changePage = (page) => {
+  //   setCurrentPage(page);
+  // };
+
+  const filteredTasks = tasksData.filter((task) =>
     filter === STATUS_TASK.ACTIVE
       ? !task.completed
       : filter === STATUS_TASK.COMPLETED
@@ -103,32 +108,32 @@ const HomeMain = () => {
       : true
   );
 
-  const clearCompleted = () => {
-    setTasks((prevTasks) => prevTasks.filter((task) => !task.completed));
-  };
+  // const clearCompleted = () => {
+  //   setTasks((prevTasks) => prevTasks.filter((task) => !task.completed));
+  // };
 
   return (
     <div className="todo-container" style={theme.themeStyles}>
       <InputField
         ref={inputRef}
         onSubmit={handleSubmit}
-        disabled={loadingAddTask}
+        // disabled={loadingAddTask}
       />
 
       <TaskList
-        setTasks={setTasks}
+        // setTasks={setTasks}
         filter={filter}
         filteredTask={filteredTasks}
-        loading={loadingGetTasks}
+        loading={isLoadingGet}
         onEdit={handleEdit}
       />
 
-      <FilterList
+      {/* <FilterList
         itemsLeft={itemsLeft}
         filter={filter}
         setFilter={setFilter}
         clearCompleted={clearCompleted}
-      />
+      /> */}
 
       {/* <PagingTask
         totalPages={totalPages}

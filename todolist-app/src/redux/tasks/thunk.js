@@ -1,0 +1,20 @@
+// src/redux/tasks/tasksThunk.js
+import { createAsyncThunk } from '@reduxjs/toolkit';
+import { apiClient } from '../../api/helpers/api_helper';
+import { TASKS_GET, TASK_ADD, TASK_UPDATE } from '../../constants/url';
+
+export const getTasks = createAsyncThunk('tasks/get', async () => {
+  const response = await apiClient.get(TASKS_GET);
+  return response.data;
+});
+
+export const addTask = createAsyncThunk('tasks/add', async (task) => {
+  const response = await apiClient.post(TASK_ADD, task);
+  return response.data.data;
+});
+
+export const updateTask = createAsyncThunk('tasks/update', async ({ id, text }) => {
+  const payload = { _id: id, text };
+  const response = await apiClient.put(TASK_UPDATE, payload);
+  return { ...payload }; 
+});

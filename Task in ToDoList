@@ -62,7 +62,7 @@ Meeting note 13/05:
 *** Lý thuyết sâu hơn về useMemo, useCallback, Clousue, useEffect. -> Sâu về tư tưởng: memoization ???
 
 
-==============================================================
+======================= L10 =================================
 
 +) Cách sử dụng không giống 1 thằng hook thông thường -> Phổ biến nó là 1 component, nó sẽ trả về data, thay vì will ?
 +) inputRef ở HomeMain -> Sử dụng luôn -> Truyền xuống component con là 1 function => Chứ không truyền inputRef xuống ? => Cách hiện tại đang không tường minh, không bị phân tán logic
@@ -71,12 +71,14 @@ Meeting note 13/05:
       -  
       
       
-=======> MockAPI fake backend: +) CRUD, xử lý promise
+=======> MockAPI backend: +) CRUD, xử lý promise
 			       +) Trải nghiệm của end user UX
 
 
+======================== L11 =================================
 
-
++) Tìm hiểu về thằng AJAX
++) Sử dụng redux -> Đọc docs redux
 
 
 
