@@ -12,7 +12,7 @@ const ToDoItem = ({ task, onToggle, onDelete, onEdit}) => {
         <input
           type="checkbox"
           checked={task.completed}
-          onChange={() => onToggle(task.id)}
+          onChange={onToggle}
         />
         <span className={task.completed ? "completed" : ""}>
           {task.text}

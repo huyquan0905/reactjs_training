@@ -19,7 +19,7 @@ import { clearCompleted } from "../../redux/tasks/reducer";
 const HomeMain = () => {
   const theme = useContext(ThemeContext);
   const dispatch = useDispatch();
-  const { tasks, isLoadingGet } = useSelector((state) => state.tasks);
+  const { tasks, isLoadingGet, isLoadingAdd } = useSelector((state) => state.tasks);
 
   const [filter, setFilter] = useState(STATUS_TASK.ALL);
   const [currentPage, setCurrentPage] = useState(1);
@@ -117,7 +117,7 @@ const HomeMain = () => {
       <InputField
         ref={inputRef}
         onSubmit={handleSubmit}
-        // disabled={loadingAddTask}
+        disabled={isLoadingAdd}
       />
 
       <TaskList
@@ -128,12 +128,12 @@ const HomeMain = () => {
         onEdit={handleEdit}
       />
 
-      {/* <FilterList
+      <FilterList
         itemsLeft={itemsLeft}
         filter={filter}
         setFilter={setFilter}
         clearCompleted={clearCompleted}
-      /> */}
+      />
 
       {/* <PagingTask
         totalPages={totalPages}
