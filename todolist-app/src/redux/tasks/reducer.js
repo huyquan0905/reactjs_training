@@ -1,4 +1,3 @@
-// src/redux/tasks/tasksSlice.js
 import { createSlice } from "@reduxjs/toolkit";
 import { getTasks, addTask, updateTask, toggleTask, deleteTask } from "./thunk";
 

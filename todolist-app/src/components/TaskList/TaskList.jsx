@@ -1,14 +1,12 @@
 import React, { useState, useCallback } from "react";
 import useScroll from "../useScoll";
 import ToDoItem from "./ToDoItem";
-import { apiClient } from "../../api/helpers/api_helper";
-import { TASK_UPDATE, TASKS_REMOVE } from "../../constants/url";
 import AcModal from "../atoms/AcModal";
 import { useDispatch } from "react-redux";
 import { toggleTask, deleteTask } from "../../redux/tasks/thunk";
 import "./taskList.css";
 
-const TaskList = ({ setTasks, filteredTask, onEdit, loading }) => {
+const TaskList = ({ filteredTask, onEdit, loading }) => {
   const dispatch = useDispatch();
   const [displayTask, setDisplayTask] = useState(10);
   const [taskToDelete, setTaskToDelete] = useState(null);

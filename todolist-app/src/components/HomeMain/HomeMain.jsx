@@ -121,7 +121,6 @@ const HomeMain = () => {
       />
 
       <TaskList
-        // setTasks={setTasks}
         filter={filter}
         filteredTask={filteredTasks}
         loading={isLoadingGet}
