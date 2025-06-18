@@ -28,6 +28,8 @@ const TaskList = ({ filteredTask, onEdit, loading }) => {
 
   const confirmDelete = () => {
     dispatch(deleteRequest(taskToDelete));
+    console.log("Task deleted:", taskToDelete);
+
     setTaskToDelete(null);
   };
   const cancelDelete = () => setTaskToDelete(null);
