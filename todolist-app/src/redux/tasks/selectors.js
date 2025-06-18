@@ -1,30 +1,19 @@
-import { createSelector } from "reselect";
-import { STATUS_TASK } from "../../constants/const";
+import { createSelector } from 'reselect';
 
-export const selectTasksState = (state) => state.tasks;
-export const selectFilter = (state) => state.filter || STATUS_TASK.ALL; 
+const selectTasksState = (state) => state.tasks;
 
-export const selectTasksData = createSelector(
+// Lấy danh sách task gốc
+export const selectAllTasks = createSelector(
   [selectTasksState],
-  (tasksState) => tasksState.data ?? []
+  (tasksState) => tasksState.tasks.data || [] 
 );
 
-export const selectFilteredTasks = createSelector(
-  [selectTasksData, (_, filter) => filter],
-  (tasks, filter) => {
-    switch (filter) {
-      case STATUS_TASK.ACTIVE:
-        return tasks.filter((task) => !task.completed);
-      case STATUS_TASK.COMPLETED:
-        return tasks.filter((task) => task.completed);
-      default:
-        return tasks;
-    }
-  }
+export const selectActiveTaskCount = createSelector(
+  [selectAllTasks],
+  (tasks) => tasks.filter((t) => !t.completed).length
 );
 
-
-export const selectItemsLeft = createSelector(
-  [selectTasksData],
-  (tasks) => tasks.filter((task) => !task.completed).length
+export const selectCompletedTasks = createSelector(
+  [selectAllTasks],
+  (tasks) => tasks.filter((t) => t.completed)
 );

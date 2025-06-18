@@ -14,13 +14,16 @@ import { apiClient } from "../../api/helpers/api_helper";
 import { TASK_ADD, TASKS_GET, TASK_UPDATE } from "../../constants/url";
 import { useDispatch, useSelector } from "react-redux";
 import { getTasks, addTask, updateTask } from "../../redux/tasks/thunk";
-// import { clearCompleted } from "../../redux/tasks/reducer";
 import {
   fetch,
   addRequest,
   updateRequest,
   clearCompleted,
 } from "../../redux/tasks/slice";
+import {
+  selectAllTasks,
+  selectActiveTaskCount,
+} from "../../redux/tasks/selectors";
 
 const HomeMain = () => {
   const theme = useContext(ThemeContext);
@@ -44,7 +47,8 @@ const HomeMain = () => {
 
   const tasksData = useMemo(() => tasks.data ?? [], [tasks.data]);
 
-  const itemsLeft = tasksData.filter((t) => !t.completed).length;
+  // const itemsLeft = tasksData.filter((t) => !t.completed).length;
+  const itemsLeft = useSelector(selectActiveTaskCount);
 
   // const handleSubmit = async (value, editingId) => {
   //   // if (editingId !== null) {
