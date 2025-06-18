@@ -14,12 +14,20 @@ import { apiClient } from "../../api/helpers/api_helper";
 import { TASK_ADD, TASKS_GET, TASK_UPDATE } from "../../constants/url";
 import { useDispatch, useSelector } from "react-redux";
 import { getTasks, addTask, updateTask } from "../../redux/tasks/thunk";
-import { clearCompleted } from "../../redux/tasks/reducer";
+// import { clearCompleted } from "../../redux/tasks/reducer";
+import {
+  fetch,
+  addRequest,
+  updateRequest,
+  clearCompleted,
+} from "../../redux/tasks/slice";
 
 const HomeMain = () => {
   const theme = useContext(ThemeContext);
   const dispatch = useDispatch();
-  const { tasks, isLoadingGet, isLoadingAdd } = useSelector((state) => state.tasks);
+  const { tasks, isLoadingGet, isLoadingAdd } = useSelector(
+    (state) => state.tasks
+  );
 
   const [filter, setFilter] = useState(STATUS_TASK.ALL);
   const [currentPage, setCurrentPage] = useState(1);
@@ -27,7 +35,7 @@ const HomeMain = () => {
   // const totalPages = Math.ceil(tasks.length / TASKS_PER_PAGE);
 
   useEffect(() => {
-    dispatch(getTasks());
+    dispatch(fetch());
   }, []);
 
   const handleEdit = (id, text) => {
@@ -86,9 +94,9 @@ const HomeMain = () => {
 
   const handleSubmit = (value, editingId) => {
     if (editingId) {
-      dispatch(updateTask({ id: editingId, text: value }));
+      dispatch(updateRequest({ id: editingId, text: value }));
     } else {
-      dispatch(addTask({ text: value, completed: false }));
+      dispatch(addRequest({ text: value, completed: false }));
     }
   };
 

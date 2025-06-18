@@ -1,64 +1,42 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { getTasks, addTask, updateTask, toggleTask, deleteTask } from "./thunk";
+extraReducers: (builder) => {
+  builder
+    .addCase('tasks/get', (state) => {
+      state.isloadingGet = true;
+    })
+    .addCase('tasks/getSuccess', (state, action) => {
+      state.tasks = action.payload;
+      state.isloadingGet = false;
+    })
 
-const taskSlice = createSlice({
-  name: "tasks",
-  initialState: {
-    tasks: [],
-    isloadingGet: false,
-    isLoadingAdd: false,
-  },
-  reducers: {
-    clearCompleted(state) {
-      state.tasks = state.tasks.filter((t) => !t.completed);
-    },
-  },
-  extraReducers: (builder) => {
-    // Get tasks
-    builder
-      .addCase(getTasks.pending, (state) => {
-        state.isloadingGet = true;
-      })
-      .addCase(getTasks.fulfilled, (state, action) => {
-        state.tasks = action.payload;
-        state.isloadingGet = false;
-      })
+    .addCase('tasks/add', (state) => {
+      state.isLoadingAdd = true;
+    })
+    .addCase('tasks/addSuccess', (state, action) => {
+      state.tasks.data.unshift(action.payload);
+      state.isLoadingAdd = false;
+    })
 
-      // Create task
-      .addCase(addTask.pending, (state) => {
-        state.isLoadingAdd = true;
-      })
-      .addCase(addTask.fulfilled, (state, action) => {
-        state.tasks.data.unshift(action.payload);
-        state.isLoadingAdd = false;
-      })
+    .addCase('tasks/updateSuccess', (state, action) => {
+      const id = state.tasks.data.findIndex(
+        (t) => t._id === action.payload._id
+      );
+      if (id !== -1) {
+        state.tasks.data[id] = action.payload;
+      }
+    })
 
-      // Update task
-      .addCase(updateTask.fulfilled, (state, action) => {
-        const id = state.tasks.data.findIndex(
-          (t) => t._id === action.payload._id
-        );
-        if (id !== -1) {
-          state.tasks[id] = action.payload;
-        }
-      })
+    .addCase('tasks/toggleSuccess', (state, action) => {
+      const index = state.tasks.data.findIndex(
+        (t) => t._id === action.payload._id
+      );
+      if (index !== -1) {
+        state.tasks.data[index].completed = action.payload.completed;
+      }
+    })
 
-      .addCase(toggleTask.fulfilled, (state, action) => {
-        const index = state.tasks.data.findIndex(
-          (t) => t._id === action.payload._id
-        );
-        if (index !== -1) {
-          state.tasks.data[index].completed = action.payload.completed;
-        }
-      })
-
-      .addCase(deleteTask.fulfilled, (state, action) => {
-        state.tasks.data = state.tasks.data.filter(
-          (task) => task._id !== action.payload
-        );
-      });
-  },
-});
-
-export const { clearCompleted } = taskSlice.actions;
-export default taskSlice.reducer;
+    .addCase('tasks/deleteSuccess', (state, action) => {
+      state.tasks.data = state.tasks.data.filter(
+        (task) => task._id !== action.payload
+      );
+    });
+};

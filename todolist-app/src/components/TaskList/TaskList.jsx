@@ -5,6 +5,7 @@ import AcModal from "../atoms/AcModal";
 import { useDispatch } from "react-redux";
 import { toggleTask, deleteTask } from "../../redux/tasks/thunk";
 import "./taskList.css";
+import { toggleRequest, deleteRequest } from "../../redux/tasks/slice";
 
 const TaskList = ({ filteredTask, onEdit, loading }) => {
   const dispatch = useDispatch();
@@ -18,7 +19,7 @@ const TaskList = ({ filteredTask, onEdit, loading }) => {
   useScroll(loadMore);
 
   const handleToggle = (id, currentStatus) => {
-    dispatch(toggleTask({ id, completed: !currentStatus }));
+    dispatch(toggleRequest({ id, completed: !currentStatus }));
   };
 
   const handleDeleteClick = (taskId) => {
@@ -26,10 +27,9 @@ const TaskList = ({ filteredTask, onEdit, loading }) => {
   };
 
   const confirmDelete = () => {
-    dispatch(deleteTask(taskToDelete));
+    dispatch(deleteRequest(taskToDelete));
     setTaskToDelete(null);
   };
-
   const cancelDelete = () => setTaskToDelete(null);
 
   const taskDisplay = filteredTask.slice(0, displayTask);
